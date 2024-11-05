@@ -37,7 +37,7 @@ class App extends React.Component {
 			} else if (timer) {
 				clearInterval(timer);
 			}
-		}, 50000);
+		}, 1000);
 	}
 
 	render() {
