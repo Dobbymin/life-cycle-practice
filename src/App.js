@@ -9,8 +9,6 @@ const commentsFromServer = [
 	{ id: 3, author: 'Bob', text: 'Good morning!' },
 ];
 
-var timer;
-
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -22,23 +20,30 @@ class App extends React.Component {
 				{ id: 3, author: 'Bob', text: 'Good morning!' },
 			],
 		};
+		this.timer = null;
 	}
 
 	componentDidMount() {
-		let comments = this.state.comments;
-
-		timer = setInterval(() => {
-			if (comments.length < commentsFromServer.length) {
-				let index = comments.length;
-
-				comments.push(commentsFromServer[index]);
-
-				this.setState({ comments: comments });
-			} else if (timer) {
-				clearInterval(timer);
-			}
+		this.timer = setInterval(() => {
+			this.addComment();
 		}, 1000);
 	}
+
+	componentWillUnmount() {
+		if (this.timer) {
+			clearInterval(this.timer);
+		}
+	}
+
+	addComment = () => {
+		const { comments } = this.state;
+		if (comments.length < commentsFromServer.length) {
+			const newComment = commentsFromServer[comments.length];
+			this.setState({ comments: [...comments, newComment] });
+		} else if (this.timer) {
+			clearInterval(this.timer);
+		}
+	};
 
 	render() {
 		const { comments } = this.state;
@@ -56,8 +61,12 @@ class App extends React.Component {
 					</p>
 				</header>
 				<div>
-					{comments.map((comment, index) => (
-						<Comment key={index} name={comment.author} content={comment.text} />
+					{comments.map((comment) => (
+						<Comment
+							key={comment.id}
+							name={comment.author}
+							content={comment.text}
+						/>
 					))}
 				</div>
 			</div>
@@ -66,29 +75,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
